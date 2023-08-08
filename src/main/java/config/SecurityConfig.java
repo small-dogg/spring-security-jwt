@@ -1,7 +1,9 @@
 package config;
 
 import config.jwt.JwtAuthenticationFilter;
+import config.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
+@EnableConfigurationProperties({JwtProperties.class})
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -22,8 +25,8 @@ public class SecurityConfig {
                 .csrf().disable()
                 // STATELESS
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //
                 .and()
+                // Authority
                 .authorizeHttpRequests(
                         (authorize) ->
                             authorize
@@ -32,6 +35,7 @@ public class SecurityConfig {
                                     //
                                     .anyRequest().permitAll()
                 )
+                //인증 처리 이전 JWT인증필터 추가하여 JWT 토큰 유무화 유효성 검증 수행
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
