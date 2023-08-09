@@ -1,10 +1,11 @@
 package config.jwt;
 
+import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.springframework.security.core.Authentication;
 
 @Value(staticConstructor = "of")
 public class JwtAuth {
     private final Claims claims;
-    private final Authentication authentication;
+    private final boolean valid;
 }
