@@ -1,4 +1,4 @@
-package config.jwt;
+package com.smalldogg.springsecurityjwtexample.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +17,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Configuration
 @RequiredArgsConstructor
+@Configuration
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
     private final SecurityContextHolderStrategy securityContextHolderStrategy;
+
 
     /**
      * 클라이언트의 요청으로부터 JWT 토큰의 존재여부를 확인하고, 존재할 경우 해당 토큰이 유효한지를 검증.
@@ -35,25 +36,19 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
 
         //토큰 존재여부 및 토큰의 유효성 체크
-        if (StringUtils.isNotBlank(token) && jwtProvider.valid(token)) {
+        if (StringUtils.isNotBlank(token) && jwtProvider.isValid(token)) {
             // Authentication 객체 획득
-            JwtAuth jwtAuth = jwtProvider.getAuthentication(token);
+            Authentication authentication = jwtProvider.getAuthentication(token);
 
-            if (jwtAuth.isValid()) {
-                Authentication authentication = jwtProvider.getAuthentication(jwtAuth);
-                new AccountStatusUserDetailsChecker().check((UserDetails) authentication.getPrincipal());
-                //SecurityContextHolder에 Authentication 주체를 저장
+            new AccountStatusUserDetailsChecker().check((UserDetails) authentication.getPrincipal());
+            //SecurityContextHolder에 Authentication 주체를 저장
 
-                //SecurityContextHolder.getContext().setAuthentication(Authentication) 의 방식읜 race condition이 발생할 수 있어 아래와 같이 처리
-                SecurityContext context = securityContextHolderStrategy.createEmptyContext();
-                context.setAuthentication(authentication);
-                this.securityContextHolderStrategy.setContext(context);
-            }
-
-
+            //SecurityContextHolder.getContext().setAuthentication(Authentication) 의 방식읜 race condition이 발생할 수 있어 아래와 같이 처리
+            SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+            context.setAuthentication(authentication);
+            this.securityContextHolderStrategy.setContext(context);
         }
 
         //다음 필터 호출
-        chain.doFilter(request, response);
-    }
+        chain.doFilter(request,response);
 }

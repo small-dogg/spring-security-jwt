@@ -1,4 +1,4 @@
-package config.jwt;
+package com.smalldogg.springsecurityjwtexample.config.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

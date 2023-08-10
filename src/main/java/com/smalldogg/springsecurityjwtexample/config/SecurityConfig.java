@@ -1,7 +1,7 @@
-package config;
+package com.smalldogg.springsecurityjwtexample.config;
 
-import config.jwt.JwtAuthenticationFilter;
-import config.jwt.JwtProperties;
+import com.smalldogg.springsecurityjwtexample.config.jwt.JwtAuthenticationFilter;
+import com.smalldogg.springsecurityjwtexample.config.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

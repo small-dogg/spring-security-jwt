@@ -1,4 +1,4 @@
-package config.jwt;
+package com.smalldogg.springsecurityjwtexample.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
