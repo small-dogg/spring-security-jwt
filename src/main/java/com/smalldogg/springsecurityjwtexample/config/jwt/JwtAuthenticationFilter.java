@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AccountStatusUserDetailsCheck
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -15,7 +14,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -43,11 +41,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
             new AccountStatusUserDetailsChecker().check((UserDetails) authentication.getPrincipal());
             //SecurityContextHolder에 Authentication 주체를 저장
-
-            //SecurityContextHolder.getContext().setAuthentication(Authentication) 의 방식읜 race condition이 발생할 수 있어 아래와 같이 처리
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
+
+            //@TODO: 가이드 문서에서는 SecurityContextHolderStrategy 를 wire 해서 해당 구현체에서 비어있는 Security를 생성하여 사용하라고 권고하지만,
+            //좀더 공부하고 적용할 것.
         }
 
         //다음 필터 호출
